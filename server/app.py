@@ -101,7 +101,26 @@ class TicketById(Resource):
             rules=('trains', ))
         response = make_response(ticket_to_dict(), 200)
         return response
-#patch
+
+
+    def patch(self, id):
+        ticket = Ticket.query.filter_by(id=id).first()
+
+        data = request.get_json()
+        for attr in data:
+                setattr(ticket, attr, data[attr])
+
+                db.session.add(ticket)
+                db.session.commit()
+
+                return make_response(
+                    ticket.to_dict(),
+                    202
+                )
+
+
+
+
 
     def delete(self, id):
         user_id = get_current_user_id()
@@ -137,6 +156,34 @@ class Trains(Resource):
         )
 
         return response
+    
+
+    def post(self):
+        data = request.get_json()
+        try:
+            train = Train(
+                title = data["title"],
+                description = data["description"],
+                image_url = data["image_url"]
+            )
+            db.session.add(train)
+            db.session.commit()
+
+        except Exception as e:
+            return make_response({
+               "errors": [e.__str__()]
+           }, 422)
+        
+
+        return make_response(
+            train.to_dict(),
+            201
+        )
+
+
+
+
+
 
 class Users(Resource):
     def get(self):
