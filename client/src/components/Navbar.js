@@ -1,18 +1,59 @@
+import React from "react";
 import { Link } from "react-router-dom";
-import logo from "../logo.jpg";
+import styled from "styled-components";
+import { Button } from "../styles";
 
-function Navbar() {
+function NavBar({ user, setUser }) {
+  function handleLogoutClick() {
+    fetch("/logout", { method: "DELETE" }).then((r) => {
+      if (r.ok) {
+        setUser(null);
+      }
+    });
+  }
+
   return (
-    <header>
-      <div className="logo">
-        <img src={logo} alt="Train logo" />
-        <h1>Train World</h1>
-      </div>
-      <nav>
-        <Link to="/">Home</Link>
-      </nav>
-    </header>
+    <Wrapper>
+      <Logo>
+        <Link to="/">TrainWorld</Link>
+      </Logo>
+      <Nav>
+        <Button as={Link} to="/new">
+          New Recipe
+        </Button>
+        <Button variant="outline" onClick={handleLogoutClick}>
+          Logout
+        </Button>
+      </Nav>
+    </Wrapper>
   );
 }
 
-export default Navbar;
+const Wrapper = styled.header`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+`;
+
+const Logo = styled.h1`
+  font-family: "Permanent Marker", cursive;
+  font-size: 3rem;
+  color: deeppink;
+  margin: 0;
+  line-height: 1;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+`;
+
+const Nav = styled.nav`
+  display: flex;
+  gap: 4px;
+  position: absolute;
+  right: 8px;
+`;
+
+export default NavBar;

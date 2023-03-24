@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import TrainForm from "./TrainForm";
 
-function Home() {
+function Conductor() {
   const [{ data: conductor, error, status }, setConductor] = useState({
     data: null,
     error: null,
@@ -63,4 +63,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Conductor;
