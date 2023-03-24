@@ -5,16 +5,16 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: tomato;
+  background-color: rgb(71, 200, 255);
 }
 
 a {
-  color: firebrick;
+  color: rgb(0, 0, 0);
 }
 
 header {
   padding: 8px;
-  background-color: wheat;
+  background-color: rgb(255, 255, 255);
   display: flex;
   justify-content: space-between;
 }
@@ -30,14 +30,14 @@ header .logo img {
   animation: spin 5s infinite linear;
 }
 
-@keyframes spin {
+/* @keyframes spin {
   0% {
     transform: rotate(0deg);
   }
   100% {
     transform: rotate(360deg);
   }
-}
+} */
 
 header nav {
   display: flex;

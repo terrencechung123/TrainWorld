@@ -1,15 +1,15 @@
 import { Route, Switch } from "react-router";
 import Home from "./Home";
 import Navbar from "./Navbar";
-import Restaurant from "./Restaurant";
+import Conductor from "./Conductor";
 
 function App() {
   return (
     <>
       <Navbar />
       <Switch>
-        <Route exact path="/restaurants/:id">
-          <Restaurant />
+        <Route exact path="/conductors/:id">
+          <Conductor />
         </Route>
         <Route exact path="/">
           <Home />

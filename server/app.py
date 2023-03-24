@@ -4,7 +4,7 @@ from flask import Flask, make_response, jsonify, request
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
 
-from models import db, Restaurant, RestaurantPizza, Pizza
+from models import db, Conductor, TrainRide, Train
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
@@ -17,77 +17,76 @@ db.init_app(app)
 api = Api(app)
 
 
-class Restaurants(Resource):
+class Conductors(Resource):
     def get(self):
-        restaurants = Restaurant.query.all()
-        restaurants_dict_list = [restaurant.to_dict()
-                                for restaurant in restaurants]
+        conductors = Conductor.query.all()
+        conductors_dict_list = [conductor.to_dict()
+                                for conductor in conductors]
         response = make_response(
-            restaurants_dict_list,
+            conductors_dict_list,
             200
         )
         return response
 
-api.add_resource(Restaurants, '/restaurants')
+api.add_resource(Conductors, '/conductors')
 
-class RestaurantById(Resource):
+class ConductorById(Resource):
     def get(self, id):
-        restaurant = Restaurant.query.filter_by(id=id).first()
-        if not restaurant:
+        conductor = Conductor.query.filter_by(id=id).first()
+        if not conductor:
             return make_response({
-                "error": "Restaurant not found"
+                "error": "Conductor not found"
             }, 404)
-        restaurant_dict = restaurant.to_dict(
-            rules=('pizzas', ))
-        response = make_response(restaurant_dict, 200)
+        conductor_dict = conductor.to_dict(
+            rules=('trains', ))
+        response = make_response(conductor_dict, 200)
         return response
 
     def delete(self, id):
-        restaurant = Restaurant.query.filter_by(id=id).first()
-        if not restaurant:
+        conductor = Conductor.query.filter_by(id=id).first()
+        if not conductor:
             return make_response({
-                "error": "Restaurant not found"
+                "error": "Conductor not found"
             }, 404)
 
-        db.session.delete(restaurant)
+        db.session.delete(conductor)
         db.session.commit()
 
-api.add_resource(RestaurantById, '/restaurants/<int:id>')
+api.add_resource(ConductorById, '/conductors/<int:id>')
 
-class Pizzas(Resource):
+class Trains(Resource):
     def get(self):
-        pizzas = Pizza.query.all()
-        pizzas_dict_list = [pizza.to_dict()
-                                for pizza in pizzas]
+        trains = Train.query.all()
+        trains_dict_list = [train.to_dict()
+                                for train in trains]
         response = make_response(
-            pizzas_dict_list,
+            trains_dict_list,
             200
         )
 
         return response
-api.add_resource(Pizzas, '/pizzas')
+api.add_resource(Trains, '/trains')
 
-class RestaurantPizzas(Resource):
+class TrainRides(Resource):
     def post(self):
         data = request.get_json()
         try:
-            restaurantpizza = RestaurantPizza(
-                price=data['price'],
-                pizza_id=data['pizza_id'],
-                restaurant_id=data['restaurant_id']
+            trainRide = TrainRide(
+                train_id=data['train_id'],
+                conductor_id=data['conductor_id']
             )
-            db.session.add(restaurantpizza)
+            db.session.add(trainRide)
             db.session.commit()
         except Exception as e:
             return make_response({
                 "errors": [e.__str__()]
             }, 422)
         response = make_response(
-            restaurantpizza.to_dict(),
+            trainRide.to_dict(),
             201
         )
         return response
-api.add_resource(RestaurantPizzas,'/restaurant_pizzas')
+api.add_resource(TrainRides,'/train_rides')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

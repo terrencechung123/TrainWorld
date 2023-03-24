@@ -2,21 +2,21 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function Home() {
-  const [restaurants, setRestaurants] = useState([]);
+  const [conductors, setConductors] = useState([]);
 
   useEffect(() => {
-    fetch("/restaurants")
+    fetch("/conductors")
       .then((r) => r.json())
-      .then(setRestaurants);
+      .then(setConductors);
   }, []);
 
   function handleDelete(id) {
-    fetch(`/restaurants/${id}`, {
+    fetch(`/conductors/${id}`, {
       method: "DELETE",
     }).then((r) => {
       if (r.ok) {
-        setRestaurants((restaurants) =>
-          restaurants.filter((restaurant) => restaurant.id !== id)
+        setConductors((conductors) =>
+          conductors.filter((conductor) => conductor.id !== id)
         );
       }
     });
@@ -24,13 +24,13 @@ function Home() {
 
   return (
     <section className="container">
-      {restaurants.map((restaurant) => (
-        <div key={restaurant.id} className="card">
+      {conductors.map((conductor) => (
+        <div key={conductor.id} className="card">
           <h2>
-            <Link to={`/restaurants/${restaurant.id}`}>{restaurant.name}</Link>
+            <Link to={`/conductors/${conductor.id}`}>{conductor.name}</Link>
           </h2>
-          <p>Address: {restaurant.address}</p>
-          <button onClick={() => handleDelete(restaurant.id)}>Delete</button>
+          <p>Avatar: {conductor.avatar}</p>
+          <button onClick={() => handleDelete(conductor.id)}>Delete</button>
         </div>
       ))}
     </section>

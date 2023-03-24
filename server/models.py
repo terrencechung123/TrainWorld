@@ -10,48 +10,40 @@ metadata = MetaData(naming_convention={
 
 db = SQLAlchemy(metadata=metadata)
 
-class RestaurantPizza(db.Model, SerializerMixin):
-    __tablename__ = 'restaurant_pizzas'
+class TrainRide(db.Model, SerializerMixin):
+    __tablename__ = 'train_rides'
 
-    serialize_rules = ('-pizza', '-restaurant',)
+    serialize_rules = ('-train', '-conductor',)
 
     id = db.Column(db.Integer, primary_key=True)
-    pizza_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'))
-    restaurant_id = db.Column(db.Integer, db.ForeignKey('pizzas.id'))
-    price = db.Column(db.Integer)
-    created_at = db.Column(db.DateTime, server_default = db.func.now())
-    updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
+    train_id = db.Column(db.Integer, db.ForeignKey('conductors.id'))
+    conductor_id = db.Column(db.Integer, db.ForeignKey('trains.id'))
+    start_time = db.Column(db.DateTime, server_default = db.func.now())
+    end_time = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
 
-    @validates('price')
-    def validate_price(self, key, value):
-        if value >= 1 and value <= 30:
-            return value
-        else:
-            raise ValueError('Price must be between 1 and 30')
 
-class Restaurant(db.Model, SerializerMixin):
-    __tablename__ = 'restaurants'
+class Conductor(db.Model, SerializerMixin):
+    __tablename__ = 'conductors'
 
-    serialize_rules = ('-restaurant_pizzas','-created_at','-restaurant_id','-updated_at')
+    serialize_rules = ('-train_rides','-created_at','-conductor_id','-updated_at')
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-    address = db.Column(db.String)
+    avatar = db.Column(db.String)
 
-    restaurant_pizzas = db.relationship('RestaurantPizza', backref='restaurant')
-    pizzas = association_proxy('restaurant_pizzas', 'pizza')
-
-
+    train_rides = db.relationship('TrainRide', backref='conductor')
+    trains = association_proxy('train_rides', 'train')
 
 
-class Pizza(db.Model, SerializerMixin):
-    __tablename__ = 'pizzas'
 
-    serialize_rules = ('-restaraunt_pizzas','-created_at','-updated_at','-restaurant_pizzas')
+
+class Train(db.Model, SerializerMixin):
+    __tablename__ = 'trains'
+
+    serialize_rules = ('-train_rides','-created_at','-updated_at','-train_rides')
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-    ingredients = db.Column(db.String)
-    created_at = db.Column(db.DateTime, server_default = db.func.now())
-    updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
+    description = db.Column(db.String)
+    avatar = db.Column(db.String)
 
-    restaurant_pizzas = db.relationship('RestaurantPizza', backref='pizza')
-    restaurants = association_proxy('restaurant_pizzas', 'restaurant')
+    train_rides = db.relationship('TrainRide', backref='train')
+    conductors = association_proxy('train_rides', 'conductor')

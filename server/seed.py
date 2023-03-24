@@ -4,40 +4,40 @@ from faker import Faker
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app import app
-from models import db, Restaurant, Pizza, RestaurantPizza
+from models import db, Conductor, Train, TrainRide
 
 with app.app_context():
 
 # This will delete any existing rows
 # so you can run the seed file multiple times without having duplicate entries in your database
     print("Deleting data...")
-    Pizza.query.delete()
-    Restaurant.query.delete()
-    RestaurantPizza.query.delete()
+    Train.query.delete()
+    Conductor.query.delete()
+    TrainRide.query.delete()
 
-    print("Creating restaurants...")
-    shack = Restaurant(name = "Karen's Pizza Shack", address = 'address1')
-    bistro = Restaurant(name = "Sanjay's Pizza", address = 'address2')
-    palace = Restaurant(name = "Kiki's Pizza", address = 'address3')
-    restaurants = [shack, bistro, palace]
+    print("Creating conductors...")
+    conductor1 = Conductor(name = "Bob", avatar = 'avatar1')#change avatar pictures later
+    conductor2 = Conductor(name = "Bill", avatar = 'avatar2')
+    conductor3 = Conductor(name = "Bo", avatar = 'avatar3')
+    conductors = [conductor1, conductor2, conductor3]
 
-    print("Creating pizzas...")
+    print("Creating trains...")
 
 
-    cheese = Pizza(name = "Emma", ingredients = "Dough, Tomato Sauce, Cheese")
-    pepperoni = Pizza(name = "Geri", ingredients = "Dough, Tomato Sauce, Cheese, Pepperoni")
-    california = Pizza(name = "Melanie", ingredients = "Dough, Sauce, Ricotta, Red peppers, Mustard")
-    pizzas = [cheese, pepperoni, california]
+    train1 = Train(name = "Thomas", description = "The Train Engine", avatar = 'avatar1')
+    train2 = Train(name = "Percy", description = "The Green Train", avatar = 'avatar2')
+    train3 = Train(name = "Toby", description = "The Tram Engine", avatar = 'avatar3')
+    trains = [train1,train2,train3]
 
-    print("Creating RestaurantPizza...")
+    print("Creating TrainRide...")
 
-    pr1 = RestaurantPizza(restaurant = shack, pizza = cheese, price = 1)
-    pr2 = RestaurantPizza(restaurant = bistro, pizza  = pepperoni, price = 4)
-    pr3 = RestaurantPizza(restaurant = palace, pizza = california, price = 5)
-    restaurantPizzas = [pr1, pr2, pr3]
-    db.session.add_all(restaurants)
-    db.session.add_all(pizzas)
-    db.session.add_all(restaurantPizzas)
+    tr1 = TrainRide(conductor = conductor1, train = train1)
+    tr2 = TrainRide(conductor = conductor2, train  = train2)
+    tr3 = TrainRide(conductor = conductor3, train = train3)
+    trainRides = [tr1, tr2, tr3]
+    db.session.add_all(conductors)
+    db.session.add_all(trains)
+    db.session.add_all(trainRides)
     db.session.commit()
 
     print("Seeding done!")
