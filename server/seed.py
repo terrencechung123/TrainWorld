@@ -5,6 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app import app
 from models import db, Conductor, Train, TrainRide
+from random import randint, choice as rc
 
 with app.app_context():
 
@@ -14,6 +15,34 @@ with app.app_context():
     Train.query.delete()
     Conductor.query.delete()
     TrainRide.query.delete()
+    User.query.delete()
+
+    fake = Faker()
+
+    print("Creating users...")
+
+    #make sure users have unique usernames
+    users = []
+    usernames = []
+
+    for i in range (20):
+
+        username = fake.first_name()
+        while username in usernames:
+            username = fake.first_name()
+            usernames.append(username)
+
+        user = User(
+            username = username,
+            bio = fake.paragraph(nb_sentences=3),
+            image_url=fake.url(),
+        )
+
+        user.password_hash=user.username + 'password'
+
+        users.append(user)
+
+    db.session.add_all(users)
 
     print("Creating conductors...")
     conductor1 = Conductor(name = "Bob", avatar = 'avatar1')#change avatar pictures later

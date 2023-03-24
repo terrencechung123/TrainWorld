@@ -47,3 +47,8 @@ class Train(db.Model, SerializerMixin):
 
     train_rides = db.relationship('TrainRide', backref='train')
     conductors = association_proxy('train_rides', 'conductor')
+
+class User(db.Model, SerializerMixin):
+    __table__ = 'users'
+
+    pass
