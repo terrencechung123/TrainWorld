@@ -1,58 +1,12 @@
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import MetaData
-from sqlalchemy.orm import validates
-from sqlalchemy.ext.associationproxy import association_proxy
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_serializer import SerializerMixin
 
-metadata = MetaData(naming_convention={
-    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
-})
-
-db = SQLAlchemy(metadata=metadata)
-
-class TrainRide(db.Model, SerializerMixin):
-    __tablename__ = 'train_rides'
-
-    serialize_rules = ('-train', '-conductor',)
-
-    id = db.Column(db.Integer, primary_key=True)
-    train_id = db.Column(db.Integer, db.ForeignKey('conductors.id'))
-    conductor_id = db.Column(db.Integer, db.ForeignKey('trains.id'))
-    start_time = db.Column(db.DateTime, server_default = db.func.now())
-    end_time = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
-
-
-class Conductor(db.Model, SerializerMixin):
-    __tablename__ = 'conductors'
-
-    serialize_rules = ('-train_rides','-created_at','-conductor_id','-updated_at')
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    avatar = db.Column(db.String)
-
-    train_rides = db.relationship('TrainRide', backref='conductor')
-    trains = association_proxy('train_rides', 'train')
-
-
-
-
-class Train(db.Model, SerializerMixin):
-    __tablename__ = 'trains'
-
-    serialize_rules = ('-train_rides','-created_at','-updated_at','-train_rides')
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    description = db.Column(db.String)
-    avatar = db.Column(db.String)
-
-    train_rides = db.relationship('TrainRide', backref='train')
-    conductors = association_proxy('train_rides', 'conductor')
-
+from config import db, bcrypt
 
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
-    serialize_rules = ('-recipes.user', '-_password_hash',)
+    serialize_rules = ('-trains.user', '-_password_hash',)
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True, nullable=False)
@@ -60,7 +14,7 @@ class User(db.Model, SerializerMixin):
     image_url = db.Column(db.String)
     bio = db.Column(db.String)
 
-    recipes = db.relationship('Recipe', backref='user')
+    trains = db.relationship('Train', backref='user')
 
     @hybrid_property
     def password_hash(self):
@@ -79,6 +33,18 @@ class User(db.Model, SerializerMixin):
     def __repr__(self):
         return f'<User {self.username}>'
 
+class Train(db.Model, SerializerMixin):
+    __tablename__ = 'trains'
+    __table_args__ = (
+        db.CheckConstraint('length(instructions) >= 50'),
+    )
 
-    # def __repr__(self):
-    #     return f'<Recipe {self.id}: {self.title}>'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String, nullable=False)
+    instructions = db.Column(db.String, nullable=False)
+    minutes_to_complete = db.Column(db.Integer)
+
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'))
+
+    def __repr__(self):
+        return f'<Train {self.id}: {self.title}>'

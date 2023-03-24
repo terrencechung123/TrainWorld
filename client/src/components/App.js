@@ -1,9 +1,9 @@
-import { Route, Switch } from "react-router";
 import React, { useEffect, useState } from "react";
-import Home from "./Home";
-import Navbar from "./Navbar";
-import Conductor from "./Conductor";
+import { Switch, Route } from "react-router-dom";
+import NavBar from "./NavBar";
 import Login from "../pages/Login";
+import TrainList from "../pages/TrainList";
+import NewTrain from "../pages/NewTrain";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -17,19 +17,18 @@ function App() {
     });
   }, []);
 
-
   if (!user) return <Login onLogin={setUser} />;
 
   return (
     <>
-      <Navbar user={user} setUser={setUser} />
+      <NavBar user={user} setUser={setUser} />
       <main>
         <Switch>
-          <Route exact path="/conductors/:id">
-            <Conductor user={user} />
+          <Route path="/new">
+            <NewTrain user={user} />
           </Route>
-          <Route exact path="/">
-            <Home />
+          <Route path="/">
+            <TrainList />
           </Route>
         </Switch>
       </main>
@@ -38,20 +37,3 @@ function App() {
 }
 
 export default App;
-
-//   return (
-//     <>
-//       <Navbar />
-//       <Switch>
-//         <Route exact path="/conductors/:id">
-//           <Conductor />
-//         </Route>
-//         <Route exact path="/">
-//           <Home />
-//         </Route>
-//       </Switch>
-//     </>
-//   );
-// }
-
-// export default App;
