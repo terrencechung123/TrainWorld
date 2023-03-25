@@ -7,14 +7,14 @@ import { Button, Error, FormField, Input, Label, Textarea } from "../styles";
 function NewTrain({ user }) {
   const [title, setTitle] = useState("My Awesome Train");
   const [minutesToComplete, setMinutesToComplete] = useState("30");
-  const [instructions, setInstructions] = useState(`Here's how you make it.
+  const [description, setDescription] = useState(`Here's how you make it.
   
 ## Ingredients
 
 - 1c Sugar
 - 1c Spice
 
-## Instructions
+## Description
 
 **Mix** sugar and spice. _Bake_ for 30 minutes.
   `);
@@ -32,8 +32,8 @@ function NewTrain({ user }) {
       },
       body: JSON.stringify({
         title,
-        instructions,
-        minutes_to_complete: minutesToComplete,
+        description,
+        // minutes_to_complete: minutesToComplete,
       }),
     }).then((r) => {
       setIsLoading(false);
@@ -69,12 +69,12 @@ function NewTrain({ user }) {
             />
           </FormField>
           <FormField>
-            <Label htmlFor="instructions">Instructions</Label>
+            <Label htmlFor="description">Description</Label>
             <Textarea
-              id="instructions"
+              id="description"
               rows="10"
-              value={instructions}
-              onChange={(e) => setInstructions(e.target.value)}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
             />
           </FormField>
           <FormField>
@@ -96,7 +96,7 @@ function NewTrain({ user }) {
           &nbsp;·&nbsp;
           <cite>By {user.username}</cite>
         </p>
-        <ReactMarkdown>{instructions}</ReactMarkdown>
+        <ReactMarkdown>{description}</ReactMarkdown>
       </WrapperChild>
     </Wrapper>
   );

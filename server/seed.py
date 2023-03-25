@@ -24,7 +24,7 @@ with app.app_context():
     usernames = []
 
     for i in range(20):
-        
+
         username = fake.first_name()
         while username in usernames:
             username = fake.first_name()
@@ -45,12 +45,12 @@ with app.app_context():
     print("Creating trains...")
     trains = []
     for i in range(100):
-        instructions = fake.paragraph(nb_sentences=8)
-        
+        description = fake.paragraph(nb_sentences=8)
+
         train = Train(
-            title=fake.sentence(),
-            instructions=instructions,
-            minutes_to_complete=randint(15,90),
+            title=fake.first_name(),
+            description=description,
+            # minutes_to_complete=randint(15,90),
         )
 
         train.user = rc(users)
@@ -58,6 +58,6 @@ with app.app_context():
         trains.append(train)
 
     db.session.add_all(trains)
-    
+
     db.session.commit()
     print("Complete.")

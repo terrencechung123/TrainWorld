@@ -20,12 +20,12 @@ function TrainList() {
           <Train key={train.id}>
             <Box>
               <h2>{train.title}</h2>
-              <p>
+              {/* <p>
                 <em>Time to Complete: {train.minutes_to_complete} minutes</em>
                 &nbsp;·&nbsp;
                 <cite>By {train.user.username}</cite>
-              </p>
-              <ReactMarkdown>{train.instructions}</ReactMarkdown>
+              </p> */}
+              <ReactMarkdown>{train.description}</ReactMarkdown>
             </Box>
           </Train>
         ))
