@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from flask_login import current_user
 
 from config import app, db, api
-from models import db, User, Ticket
+from models import db, User, Ticket, Train
 
 class Signup(Resource):
 
@@ -138,9 +138,20 @@ class Trains(Resource):
 
         return response
 
+class Users(Resource):
+    def get(self):
+        users = User.query.all()
+        users_dict_list = [user.to_dict()
+                                for user in users]
+        response = make_response(
+            users_dict_list,
+            200
+        )
+
+        return response
 
 
-
+api.add_resource(Users,'/users')
 api.add_resource(Trains, '/trains')
 api.add_resource(Tickets, '/tickets')
 api.add_resource(Signup, '/signup', endpoint='signup')
