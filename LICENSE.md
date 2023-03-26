@@ -19,5 +19,5 @@ contained in the Educational Content License set forth
 accessing and/or using the Educational Content, you are agreeing to all of the
 terms and conditions contained in the Educational Content License. If you do not
 agree to any or all of the terms of the Educational Content License, you are
-prohibited from accessing, reviewing or using in any way the Educational
+prohibited from accessing, ticketing or using in any way the Educational
 Content.

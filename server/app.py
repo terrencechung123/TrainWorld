@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
-from flask import request, session
+from flask import request, session, make_response
 from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
+from flask_login import current_user
 
 from config import app, db, api
-from models import db, User, Train
+from models import db, User, Ticket
 
 class Signup(Resource):
 
@@ -55,74 +56,75 @@ class Login(Resource):
         return {'error': '401 Unauthorized'}, 401
 
 class Logout(Resource):
-
     def delete(self):
         if session.get('user_id'):
             session['user_id'] = None
             return {}, 204
         return {'error': '401 Unauthorized'}, 401
 
-class TrainIndex(Resource):
+class TicketIndex(Resource):
     def get(self):
         if session.get('user_id'):
             user = User.query.filter(User.id == session['user_id']).first()
-            return [train.to_dict() for train in user.trains], 200
+            return [ticket.to_dict() for ticket in user.tickets], 200
         return {'error': '401 Unauthorized'}, 401
     def post(self):
         if session.get('user_id'):
             request_json = request.get_json()
-            title = request_json['title']
+            price = request_json['price']
             description = request_json['description']
             # minutes_to_complete = request_json['minutes_to_complete']
             try:
-                train = Train(
-                    title=title,
+                ticket = Ticket(
+                    price=price,
                     description=description,
                     # minutes_to_complete=minutes_to_complete,
                     user_id=session['user_id'],
                 )
-                db.session.add(train)
+                db.session.add(ticket)
                 db.session.commit()
-                return train.to_dict(), 201
+                return ticket.to_dict(), 201
             except IntegrityError:
                 return {'error': '422 Unprocessable Entity'}, 422
         return {'error': '401 Unauthorized'}, 401
 
 
-class Locations(Resource):
+
+class TicketById(Resource):
+    def get(self, id):
+        ticket = Ticket.query.filter_by(id=id).first()
+        if not ticket:
+            return make_response({
+                "error": "Ticket not found"
+            }, 404)
+        ticket_dict = ticket.to_dict(
+            rules=('trains', ))
+        response = make_response(ticket_to_dict(), 200)
+        return response
+#patch
+
+    def delete(self, id):
+        user_id = get_current_user_id()
+        ticket = Ticket.query.filter_by(id=id, user_id=user_id).first()
+        if not ticket:
+            return make_response({
+                "error": "Ticket not found"
+            }, 404)
+
+        db.session.delete(ticket)
+        db.session.commit()
+        return make_response({}, 204)
+
+class Tickets(Resource):
     def get(self):
-        locations = Location.query.all()
-        locations_dict_list = [location.to_dict()
-                                for location in locations]
+        tickets = Ticket.query.all()
+        tickets_dict_list = [ticket.to_dict()
+                                for ticket in tickets]
         response = make_response(
-            locations_dict_list,
+            tickets_dict_list,
             200
         )
         return response
-
-
-class LocationById(Resource):
-    def get(self, id):
-        location = Location.query.filter_by(id=id).first()
-        if not location:
-            return make_response({
-                "error": "Location not found"
-            }, 404)
-        location_dict = location.to_dict(
-            rules=('trains', ))
-        response = make_response(location_dict, 200)
-        return response
-
-    def delete(self, id):
-        location = Location.query.filter_by(id=id).first()
-        if not location:
-            return make_response({
-                "error": "Location not found"
-            }, 404)
-
-        db.session.delete(location)
-        db.session.commit()
-
 
 class Trains(Resource):
     def get(self):
@@ -137,36 +139,16 @@ class Trains(Resource):
         return response
 
 
-class Reviews(Resource):
-    def post(self):
-        data = request.get_json()
-        try:
-            review = Review(
-                train_id=data['train_id'],
-                location_id=data['location_id']
-            )
-            db.session.add(review)
-            db.session.commit()
-        except Exception as e:
-            return make_response({
-                "errors": [e.__str__()]
-            }, 422)
-        response = make_response(
-            review.to_dict(),
-            201
-        )
-        return response
 
 
-api.add_resource(Locations, '/locations')
-api.add_resource(LocationById, '/locations/<int:id>')
-api.add_resource(Reviews,'/train_rides')
+api.add_resource(Trains, '/trains')
+api.add_resource(Tickets, '/tickets')
 api.add_resource(Signup, '/signup', endpoint='signup')
 api.add_resource(CheckSession, '/check_session', endpoint='check_session')
 api.add_resource(Login, '/login', endpoint='login')
 api.add_resource(Logout, '/logout', endpoint='logout')
-api.add_resource(TrainIndex, '/train_index', endpoint='train_index')
-api.add_resource(Trains, '/trains')
+api.add_resource(TicketIndex, '/ticket_index', endpoint='ticket_index')
+api.add_resource(TicketById, '/tickets/<int:id>')
 
 
 if __name__ == '__main__':

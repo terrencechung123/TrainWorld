@@ -11,7 +11,7 @@ from config import db, bcrypt
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
-    serialize_rules = ('-trains.user', '-_password_hash',)
+    serialize_rules = ('-tickets.user', '-_password_hash',)
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True, nullable=False)
@@ -19,7 +19,8 @@ class User(db.Model, SerializerMixin):
     image_url = db.Column(db.String)
     bio = db.Column(db.String)
 
-    trains = db.relationship('Train', backref='user')
+    tickets = db.relationship('Ticket', backref='user')
+    trains = association_proxy('tickets', 'train')
 
 
     @hybrid_property
@@ -39,62 +40,29 @@ class User(db.Model, SerializerMixin):
     def __repr__(self):
         return f'<User {self.username}>'
 
-class Train(db.Model, SerializerMixin):
-    __tablename__ = 'trains'
-    # __table_args__ = (
-    #     db.CheckConstraint('length(description) >= 50'),
-    # )
+class Ticket(db.Model, SerializerMixin):
+    __tablename__ = 'tickets'
+    serialize_rules = ('-train', '-user',)
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'))
-    title = db.Column(db.String, nullable=False)
-    description = db.Column(db.String, nullable=False)
-    # minutes_to_complete = db.Column(db.Integer)
-    avatar = db.Column(db.String)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    train_id = db.Column (db.Integer, db.ForeignKey('trains.id'))
+    price = db.Column(db.String, nullable=False)
 
-
-    reviews = db.relationship('Review', backref='train')
-    locations = association_proxy('reviews', 'location')
-    users = association_proxy('reviews', 'user')
 
     def __repr__(self):
-        return f'<Train {self.id}: {self.title}>'
+        return f'<Ticket {self.id}: {self.price}>'
 
-class Review(db.Model, SerializerMixin):
-    __tablename__ = 'reviews'
-    
+
+class Train(db.Model, SerializerMixin):
+    __tablename__ = 'trains'
+
     id = db.Column(db.Integer, primary_key=True)
-    train_id = db.Column(db.Integer, db.ForeignKey('trains.id'))
-    location_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-
-    title = db.Column(db.String)
+    title = db.Column(db.String, nullable = False)
     description = db.Column(db.String)
-    rating = db.Column(db.Integer)
-    date_created = db.Column(db.DateTime, server_default=db.func.now())
+    image_url = db.Column(db.String)
 
-class Location(db.Model, SerializerMixin):
-    __tablename__ = 'locations'
 
-    serialize_rules = ('-reviews','-created_at','-location_id','-updated_at')
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String)
-    avatar = db.Column(db.String)
-    address = db.Column(db.String)
+    tickets = db.relationship('Ticket', backref='train')
+    users = association_proxy('train_rides', 'user')
 
-    reviews = db.relationship('Review', backref='location')
-    trains = association_proxy('reviews', 'train')
-    users = association_proxy('reviews', 'user')
-
-# class Train(db.Model, SerializerMixin):
-#     __tablename__ = 'trains'
-
-#     serialize_rules = ('-reviews','-created_at','-updated_at','-reviews')
-#     id = db.Column(db.Integer, primary_key=True)
-#     title = db.Column(db.String)
-#     description = db.Column(db.String)
-#     avatar = db.Column(db.String)
-
-#     reviews = db.relationship('Review', backref='train')
-#     locations = association_proxy('reviews', 'location')
-#     users = association_proxy('reviews', 'user')

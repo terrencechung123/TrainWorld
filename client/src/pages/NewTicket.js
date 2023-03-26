@@ -4,8 +4,8 @@ import styled from "styled-components";
 import ReactMarkdown from "react-markdown";
 import { Button, Error, FormField, Input, Label, Textarea } from "../styles";
 
-function NewTrain({ user }) {
-  const [title, setTitle] = useState("My Awesome Train");
+function NewTicket({ user }) {
+  const [price, setPrice] = useState("My Awesome Ticket");
   const [minutesToComplete, setMinutesToComplete] = useState("30");
   const [description, setDescription] = useState(`Here's how you make it.
   
@@ -25,13 +25,13 @@ function NewTrain({ user }) {
   function handleSubmit(e) {
     e.preventDefault();
     setIsLoading(true);
-    fetch("/trains", {
+    fetch("/tickets", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        title,
+        price,
         description,
         // minutes_to_complete: minutesToComplete,
       }),
@@ -48,15 +48,15 @@ function NewTrain({ user }) {
   return (
     <Wrapper>
       <WrapperChild>
-        <h2>Create Train</h2>
+        <h2>Create Ticket</h2>
         <form onSubmit={handleSubmit}>
           <FormField>
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="price">Price</Label>
             <Input
               type="text"
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              id="price"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
             />
           </FormField>
           <FormField>
@@ -79,7 +79,7 @@ function NewTrain({ user }) {
           </FormField>
           <FormField>
             <Button color="primary" type="submit">
-              {isLoading ? "Loading..." : "Submit Train"}
+              {isLoading ? "Loading..." : "Submit Ticket"}
             </Button>
           </FormField>
           <FormField>
@@ -90,7 +90,7 @@ function NewTrain({ user }) {
         </form>
       </WrapperChild>
       <WrapperChild>
-        <h1>{title}</h1>
+        <h1>{price}</h1>
         <p>
           <em>Time to Complete: {minutesToComplete} minutes</em>
           &nbsp;·&nbsp;
@@ -114,4 +114,4 @@ const WrapperChild = styled.div`
   flex: 1;
 `;
 
-export default NewTrain;
+export default NewTicket;

@@ -76,16 +76,16 @@ Your `User` model should also:
   `password_hash` should be met with an `AttributeError`.
 - validate the user's username to ensure that it is **present** and **unique**
   (no two users can have the same username).
-- **have many** trains.
+- **have many** tickets.
 
-Next, create a `Train` model with the following attributes:
+Next, create a `Ticket` model with the following attributes:
 
-- a train **belongs to** a user.
+- a ticket **belongs to** a user.
 - `title` that is a `String` type.
 - `instructions` that is a `String` type.
 - `minutes_to_complete` that is an `Integer` type.
 
-Add validations for the `Train` model:
+Add validations for the `Ticket` model:
 
 - `title` must be present.
 - `instructions` must be present and at least 50 characters long.
@@ -118,7 +118,7 @@ Handle sign up by implementing a `POST /signup` route. It should:
 
 > **Note: Recall that we need to format our error messages in a way that makes it
 > easy to display the information in our frontend. For this lab, because we are
-> setting up multiple validations on our `User` and `Train` models, our error
+> setting up multiple validations on our `User` and `Ticket` models, our error
 > responses need to be formatted in a way that accommodates multiple errors.**
 
 ### Auto-Login Feature
@@ -195,32 +195,32 @@ You should also be able to test this in the React application by logging in to
 check the `POST /login` route; and logging out with the logout button to test
 the `DELETE /logout` route.
 
-### Train List Feature
+### Ticket List Feature
 
-Users should only be able to view trains on our site after logging in.
+Users should only be able to view tickets on our site after logging in.
 
-Handle train viewing by implementing a `GET /trains` route. It should:
+Handle ticket viewing by implementing a `GET /tickets` route. It should:
 
-- Be handled in a `TrainIndex` resource with a `get()` method
+- Be handled in a `TicketIndex` resource with a `get()` method
 - In the `get()` method, if the user is logged in (if their `user_id` is in the
   session object):
-  - Return a JSON response with an array of all trains with their title,
+  - Return a JSON response with an array of all tickets with their title,
     instructions, and minutes to complete data along with a nested user object;
     and an HTTP status code of 200 (Success).
 - If the user is **not** logged in when they make the request:
   - Return a JSON response with an error message, and a status of 401
     (Unauthorized).
 
-### Train Creation Feature
+### Ticket Creation Feature
 
-Now that users can log in, let's allow them to create new trains!
+Now that users can log in, let's allow them to create new tickets!
 
-Handle train creation by implementing a `POST /trains` route. It should:
+Handle ticket creation by implementing a `POST /tickets` route. It should:
 
-- Be handled in the `TrainIndex` resource with a `post()` method.
+- Be handled in the `TicketIndex` resource with a `post()` method.
 - In the `post()` method, if the user is logged in (if their `user_id` is in the
   session object):
-  - Save a new train to the database if it is valid. The train should **belong
+  - Save a new ticket to the database if it is valid. The ticket should **belong
     to** the logged in user, and should have title, instructions, and minutes to
     complete data provided from the request JSON.
   - Return a JSON response with the title, instructions, and minutes to complete
@@ -229,15 +229,15 @@ Handle train creation by implementing a `POST /trains` route. It should:
 - If the user is **not** logged in when they make the request:
   - Return a JSON response with an error message, and a status of 401
     (Unauthorized).
-- If the train is **not valid**:
+- If the ticket is **not valid**:
   - Return a JSON response with the error messages, and an HTTP status code of
     422 (Unprocessable Entity).
 
-After finishing the `TrainIndex` resource, you're done! Make sure to check
+After finishing the `TicketIndex` resource, you're done! Make sure to check
 your work. You should be able to run the full test suite now with `pytest`.
 
 You should also be able to test this in the React application by creating a new
-train with the train form, and viewing a list of trains.
+ticket with the ticket form, and viewing a list of tickets.
 
 ---
 

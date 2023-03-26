@@ -4,36 +4,36 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Box, Button } from "../styles";
 
-function TrainList() {
-  const [trains, setTrains] = useState([]);
+function TicketList() {
+  const [tickets, setTickets] = useState([]);
 
   useEffect(() => {
-    fetch("/trains")
+    fetch("/tickets")
       .then((r) => r.json())
-      .then(setTrains);
+      .then(setTickets);
   }, []);
 
   return (
     <Wrapper>
-      {trains.length > 0 ? (
-        trains.map((train) => (
-          <Train key={train.id}>
+      {tickets.length > 0 ? (
+        tickets.map((ticket) => (
+          <Ticket key={ticket.id}>
             <Box>
-              <h2>{train.title}</h2>
+              <h2>{ticket.price}</h2>
               {/* <p>
-                <em>Time to Complete: {train.minutes_to_complete} minutes</em>
+                <em>Time to Complete: {ticket.minutes_to_complete} minutes</em>
                 &nbsp;·&nbsp;
-                <cite>By {train.user.username}</cite>
+                <cite>By {ticket.user.username}</cite>
               </p> */}
-              <ReactMarkdown>{train.description}</ReactMarkdown>
+              <ReactMarkdown>{ticket.description}</ReactMarkdown>
             </Box>
-          </Train>
+          </Ticket>
         ))
       ) : (
         <>
-          <h2>No Trains Found</h2>
+          <h2>No Tickets Found</h2>
           <Button as={Link} to="/new">
-            Make a New Train
+            Make a New Ticket
           </Button>
         </>
       )}
@@ -46,8 +46,8 @@ const Wrapper = styled.section`
   margin: 40px auto;
 `;
 
-const Train = styled.article`
+const Ticket = styled.article`
   margin-bottom: 24px;
 `;
 
-export default TrainList;
+export default TicketList;

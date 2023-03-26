@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Switch, Route } from "react-router-dom";
 import NavBar from "./NavBar";
 import Login from "../pages/Login";
-import TrainList from "../pages/TrainList";
-import NewTrain from "../pages/NewTrain";
+import TicketList from "../pages/TicketList";
+import NewTicket from "../pages/NewTicket";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -25,10 +25,10 @@ function App() {
       <main>
         <Switch>
           <Route path="/new">
-            <NewTrain user={user} />
+            <NewTicket user={user} />
           </Route>
           <Route path="/">
-            <TrainList />
+            <TicketList />
           </Route>
         </Switch>
       </main>
