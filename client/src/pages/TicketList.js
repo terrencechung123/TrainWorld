@@ -6,12 +6,45 @@ import { Box, Button } from "../styles";
 
 function TicketList() {
   const [tickets, setTickets] = useState([]);
-
+  
+  
   useEffect(() => {
     fetch("/tickets")
-      .then((r) => r.json())
-      .then(setTickets);
+    .then((r) => r.json())
+    .then(setTickets);
   }, []);
+  
+  
+  function handleDeleteTicket(id) {
+    fetch(`/tickets/${id}`, {
+      method: "DELETE",
+    }).then((r) => {
+      if (r.ok) {
+        setTickets((tickets) => 
+        tickets.filter((ticket) => ticket.id !== id)
+        );
+      }
+    });
+  }
+  
+
+
+  // function handleUpdateTicket(newTicket){
+  //   setTickets(tickets => [...tickets, newTicket])
+  // }
+  
+  // async function updateTicket(){
+  //   const updateData = {
+  //     price: formData.price,
+  //     train_id: formData.train_id,
+  //     user_id: formData.user_id
+  //   }
+  // }
+
+
+
+
+  
 
   return (
     <Wrapper>
@@ -23,6 +56,9 @@ function TicketList() {
               <h2>{"Price: "+ticket.price}</h2>
               <h2>{"Train: "+ticket.train.title}</h2>
               <h2>{"User: "+ticket.user.username}</h2>
+              <Button onClick={() => handleDeleteTicket(ticket.id)}>
+                Delete ticket
+              </Button>
               {/* <p>
                 <em>Time to Complete: {ticket.minutes_to_complete} minutes</em>
                 &nbsp;·&nbsp;
