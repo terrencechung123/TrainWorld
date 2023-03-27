@@ -5,7 +5,7 @@ import ReactMarkdown from "react-markdown";
 import { Button, Error, FormField, Input, Label, Textarea } from "../styles";
 
 function NewTicket({ user }) {
-  const [price, setPrice] = useState("My Awesome Ticket");
+  const [price, setPrice] = useState("");
   const [minutesToComplete, setMinutesToComplete] = useState("30");
   const [description, setDescription] = useState(`Here's how you make it.
   
