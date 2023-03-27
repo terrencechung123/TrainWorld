@@ -11,7 +11,7 @@ from config import db, bcrypt
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
-    serialize_rules = ('-tickets.user', '-_password_hash',)
+    serialize_rules = ('-tickets', '-_password_hash',)
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True, nullable=False)
@@ -42,7 +42,7 @@ class User(db.Model, SerializerMixin):
 
 class Ticket(db.Model, SerializerMixin):
     __tablename__ = 'tickets'
-    serialize_rules = ('-train', '-user',)
+    # serialize_rules = ('-user',)
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -64,5 +64,6 @@ class Train(db.Model, SerializerMixin):
 
 
     tickets = db.relationship('Ticket', backref='train')
-    users = association_proxy('train_rides', 'user')
+    users = association_proxy('tickets', 'user')
 
+    serialize_rules = ('-tickets',)

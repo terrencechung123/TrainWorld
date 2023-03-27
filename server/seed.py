@@ -14,6 +14,7 @@ with app.app_context():
     print("Deleting all records...")
     Ticket.query.delete()
     User.query.delete()
+    Train.query.delete()
 
 
     fake = Faker()
@@ -60,7 +61,8 @@ with app.app_context():
         # instructions = fake.paragraph(nb_sentences=8)
 
         ticket = Ticket(
-            price=20
+            price=20,
+            # train_title = Ticket.train.title
             )
 
         ticket.user = rc(users)

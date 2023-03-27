@@ -19,7 +19,10 @@ function TicketList() {
         tickets.map((ticket) => (
           <Ticket key={ticket.id}>
             <Box>
-              <h2>{ticket.price}</h2>
+              <h2>{"Ticket"}</h2>
+              <h2>{"Price: "+ticket.price}</h2>
+              <h2>{"Train: "+ticket.train.title}</h2>
+              <h2>{"User: "+ticket.user.username}</h2>
               {/* <p>
                 <em>Time to Complete: {ticket.minutes_to_complete} minutes</em>
                 &nbsp;·&nbsp;
