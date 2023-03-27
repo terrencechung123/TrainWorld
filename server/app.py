@@ -118,8 +118,9 @@ class TicketById(Resource):
                 )
 
     def delete(self, id):
-        user_id = get_current_user_id()
-        ticket = Ticket.query.filter_by(id=id, user_id=user_id).first()
+        # user_id = get_current_user_id()
+        # ticket = Ticket.query.filter_by(id=id, user_id=user_id).first()
+        ticket = Ticket.query.filter_by(id=id).first()
         if not ticket:
             return make_response({
                 "error": "Ticket not found"
@@ -128,6 +129,9 @@ class TicketById(Resource):
         db.session.delete(ticket)
         db.session.commit()
         return make_response({}, 204)
+    
+
+
 
 class Tickets(Resource):
     def get(self):
