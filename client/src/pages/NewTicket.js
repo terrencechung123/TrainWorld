@@ -6,43 +6,64 @@ import { Button, Error, FormField, Input, Label, Textarea } from "../styles";
 
 function NewTicket({ user }) {
   const [price, setPrice] = useState("");
-  const [minutesToComplete, setMinutesToComplete] = useState("30");
-  const [description, setDescription] = useState(`Here's how you make it.
-  
-## Ingredients
-
-- 1c Sugar
-- 1c Spice
-
-## Description
-
-**Mix** sugar and spice. _Bake_ for 30 minutes.
-  `);
+  const [trainId, setTrainId] = useState("");
+  const [userId, setUserId] = useState("");
   const [errors, setErrors] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
 
+
+  // function handleSubmit(e) {
+  //   e.preventDefault();
+  //   setIsLoading(true);
+  //   fetch("/tickets", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       price: price,
+  //       train_id: trainId,
+  //       user_id: userId,
+  //     }),
+  //   }).then((r) => {
+  //     setIsLoading(false);
+  //     if (r.ok) {
+  //       history.push("/");
+  //     } else {
+  //       r.json().then((err) => setErrors(err.errors));
+  //     }
+  //   });
+  // }
   function handleSubmit(e) {
     e.preventDefault();
     setIsLoading(true);
-    fetch("/tickets", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        price,
-        description,
-        // minutes_to_complete: minutesToComplete,
-      }),
-    }).then((r) => {
-      setIsLoading(false);
-      if (r.ok) {
-        history.push("/");
-      } else {
-        r.json().then((err) => setErrors(err.errors));
-      }
-    });
+    Promise.all([
+      fetch(`/trains/${trainId}`).then((r) => r.json()),
+      fetch(`/users/${userId}`).then((r) => r.json()),
+    ])
+      .then(([trainData, userData]) => {
+        const body = {
+          price: price,
+          train_id: trainId,
+          user_id: userId,
+        };
+        return fetch("/tickets", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        });
+      })
+      .then((r) => {
+        setIsLoading(false);
+        if (r.ok) {
+          history.push("/");
+        } else {
+          r.json().then((err) => setErrors(err.errors));
+        }
+      });
   }
 
   return (
@@ -53,28 +74,28 @@ function NewTicket({ user }) {
           <FormField>
             <Label htmlFor="price">Price</Label>
             <Input
-              type="text"
+              type="number"
               id="price"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
             />
           </FormField>
           <FormField>
-            <Label htmlFor="minutesToComplete">Minutes to complete</Label>
+            <Label htmlFor="trainId">Train ID</Label>
             <Input
               type="number"
-              id="minutesToComplete"
-              value={minutesToComplete}
-              onChange={(e) => setMinutesToComplete(e.target.value)}
+              id="trainId"
+              value={trainId}
+              onChange={(e) => setTrainId(e.target.value)}
             />
           </FormField>
           <FormField>
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              rows="10"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+            <Label htmlFor="userId">User ID</Label>
+            <Input
+              type="number"
+              id="userId"
+              value={userId}
+              onChange={(e) => setUserId(e.target.value)}
             />
           </FormField>
           <FormField>
@@ -92,11 +113,8 @@ function NewTicket({ user }) {
       <WrapperChild>
         <h1>{price}</h1>
         <p>
-          <em>Time to Complete: {minutesToComplete} minutes</em>
-          &nbsp;·&nbsp;
           <cite>By {user.username}</cite>
         </p>
-        <ReactMarkdown>{description}</ReactMarkdown>
       </WrapperChild>
     </Wrapper>
   );

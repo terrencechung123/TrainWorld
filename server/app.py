@@ -98,10 +98,9 @@ class TicketById(Resource):
                 "error": "Ticket not found"
             }, 404)
         ticket_dict = ticket.to_dict(
-            rules=('trains', ))
-        response = make_response(ticket_to_dict(), 200)
+            rules=('train',))
+        response = make_response(ticket_dict, 200)
         return response
-
 
     def patch(self, id):
         ticket = Ticket.query.filter_by(id=id).first()
@@ -117,10 +116,6 @@ class TicketById(Resource):
                     ticket.to_dict(),
                     202
                 )
-
-
-
-
 
     def delete(self, id):
         user_id = get_current_user_id()
@@ -145,6 +140,19 @@ class Tickets(Resource):
         )
         return response
 
+    def post(self):
+        data =request.get_json()
+        ticket = Ticket(
+            price = data['price'],
+            # train - data["train"],
+            train_id = data['train_id'],
+            #user = data["user"],
+            user_id = data["user_id"]
+        )
+        db.session.add(ticket)
+        db.session.commit()
+        return make_response(ticket.to_dict(),201)
+
 class Trains(Resource):
     def get(self):
         trains = Train.query.all()
@@ -156,7 +164,7 @@ class Trains(Resource):
         )
 
         return response
-    
+
 
     def post(self):
         data = request.get_json()
@@ -173,15 +181,20 @@ class Trains(Resource):
             return make_response({
                "errors": [e.__str__()]
            }, 422)
-        
+
 
         return make_response(
             train.to_dict(),
             201
         )
 
-
-
+class TrainById(Resource):
+    def get(self, id):
+        train = Train.query.filter_by(id=id).first().to_dict()
+        return make_response(
+            train,
+            200)
+api.add_resource(TrainById, "/trains/<int:id>")
 
 
 
@@ -197,6 +210,13 @@ class Users(Resource):
 
         return response
 
+class UserById(Resource):
+    def get(self, id):
+        user = User.query.filter_by(id=id).first().to_dict()
+        return make_response(
+            user,
+            200)
+api.add_resource(UserById, "/users/<int:id>")
 
 api.add_resource(Users,'/users')
 api.add_resource(Trains, '/trains')
