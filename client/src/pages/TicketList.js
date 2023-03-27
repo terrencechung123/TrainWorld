@@ -6,33 +6,49 @@ import { Box, Button } from "../styles";
 
 function TicketList() {
   const [tickets, setTickets] = useState([]);
-  
-  
+
+
   useEffect(() => {
     fetch("/tickets")
     .then((r) => r.json())
     .then(setTickets);
   }, []);
-  
-  
+
+
   function handleDeleteTicket(id) {
     fetch(`/tickets/${id}`, {
       method: "DELETE",
     }).then((r) => {
       if (r.ok) {
-        setTickets((tickets) => 
+        setTickets((tickets) =>
         tickets.filter((ticket) => ticket.id !== id)
         );
       }
     });
   }
-  
 
+  const updateTicket = async (id, data) => {
+    const response = await fetch(`/tickets/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message);
+    }
+
+    const ticketData = await response.json();
+    return ticketData;
+  };
 
   // function handleUpdateTicket(newTicket){
   //   setTickets(tickets => [...tickets, newTicket])
   // }
-  
+
   // async function updateTicket(){
   //   const updateData = {
   //     price: formData.price,
@@ -44,7 +60,7 @@ function TicketList() {
 
 
 
-  
+
 
   return (
     <Wrapper>
@@ -59,6 +75,9 @@ function TicketList() {
               <Button onClick={() => handleDeleteTicket(ticket.id)}>
                 Delete ticket
               </Button>
+              <Button as={Link} to="/update">
+          Update Ticket
+        </Button>
               {/* <p>
                 <em>Time to Complete: {ticket.minutes_to_complete} minutes</em>
                 &nbsp;·&nbsp;
