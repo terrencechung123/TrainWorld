@@ -6,6 +6,7 @@ import { Button, Error, FormField, Input, Label, Textarea } from "../styles";
 function NewTrain() {
     const [title, setTitle] = useState("");
     const [image, setImage] = useState("");
+    const [description, setDescription] = useState("");
 //   const [origin, setOrigin] = useState("");
 //   const [destination, setDestination] = useState("");
 //   const [departureTime, setDepartureTime] = useState("");
@@ -20,7 +21,8 @@ function NewTrain() {
         setIsLoading(true);
         const body = {
             title: title,
-            image: image,
+            image_url: image,
+            description: description,
     //   origin: origin,
     //   destination: destination,
     //   departure_time: departureTime,
@@ -51,10 +53,28 @@ function NewTrain() {
           <FormField>
             <Label htmlFor="title">Title</Label>
             <Input
-              type="text"
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+                type="text"
+                id="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+            />
+          </FormField>
+          <FormField>
+            <Label htmlFor="description">Description</Label>
+            <Input
+                type="text"
+                id="description"
+                value={description}
+                onChange={(e)=>setDescription(e.target.value)}
+            />
+          </FormField>
+          <FormField>
+            <Label htmlFor="image">Image</Label>
+            <Input
+                type="text"
+                id="image"
+                value={image}
+                onChange={(e)=>setImage(e.target.value)}
             />
           </FormField>
           {/* <FormField>
