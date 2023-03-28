@@ -137,8 +137,6 @@ class TicketById(Resource):
         )
 
     def delete(self, id):
-        # user_id = get_current_user_id()
-        # ticket = Ticket.query.filter_by(id=id, user_id=user_id).first()
         ticket = Ticket.query.filter_by(id=id).first()
         if not ticket:
             return make_response({
@@ -203,14 +201,15 @@ class Trains(Resource):
 
         except Exception as e:
             return make_response({
-               "errors": [e.__str__()]
-           }, 422)
+                "errors": [e.__str__()]
+            }, 422)
 
 
         return make_response(
             train.to_dict(),
             201
         )
+api.add_resource(Trains, '/trains')
 
 class TrainById(Resource):
     def get(self, id):
@@ -218,6 +217,16 @@ class TrainById(Resource):
         return make_response(
             train,
             200)
+    def delete(self, id):
+        ticket = Ticket.query.filter_by(id=id).first()
+        if not ticket:
+            return make_response({
+                "error": "Ticket not found"
+            }, 404)
+
+        db.session.delete(ticket)
+        db.session.commit()
+        return make_response({}, 204)
 api.add_resource(TrainById, "/trains/<int:id>")
 
 
@@ -243,7 +252,6 @@ class UserById(Resource):
 api.add_resource(UserById, "/users/<int:id>")
 
 api.add_resource(Users,'/users')
-api.add_resource(Trains, '/trains')
 api.add_resource(Tickets, '/tickets')
 api.add_resource(Signup, '/signup', endpoint='signup')
 api.add_resource(CheckSession, '/check_session', endpoint='check_session')

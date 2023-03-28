@@ -15,9 +15,18 @@ function NavBar({ user, setUser }) {
   return (
     <Wrapper>
       <Logo>
-        <Link to="/"></Link>
+        <Link to="/">Train World</Link>
       </Logo>
       <Nav>
+        <Button as={Link} to="/users">
+          Users
+        </Button>
+        <Button as={Link} to="/trains">
+            Trains
+          </Button>
+        <Button as={Link} to="/new_train">
+          New Train
+        </Button>
         <Button as={Link} to="/new">
           New Ticket
         </Button>

@@ -5,6 +5,9 @@ import Login from "../pages/Login";
 import TicketList from "../pages/TicketList";
 import NewTicket from "../pages/NewTicket";
 import UpdateTicket from "../pages/UpdateTicket";
+import UserList from "../pages/UserList";
+import TrainList from "../pages/TrainList";
+import NewTrain from "../pages/NewTrain";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -25,6 +28,15 @@ function App() {
       <NavBar user={user} setUser={setUser} />
       <main>
         <Switch>
+          <Route path="/users">
+            <UserList user={user}/>
+          </Route>
+          <Route path="/trains">
+            <TrainList/>
+          </Route>
+          <Route path="/new_train">
+            <NewTrain/>
+          </Route>
           <Route path="/new">
             <NewTicket user={user} />
           </Route>
