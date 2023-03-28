@@ -28,7 +28,7 @@ function App() {
           <Route path="/new">
             <NewTicket user={user} />
           </Route>
-          <Route path="/update">
+          <Route path="/update/:id/edit">
             <UpdateTicket user={user}/>
           </Route>
           <Route path="/">

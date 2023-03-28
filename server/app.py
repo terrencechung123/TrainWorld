@@ -102,20 +102,39 @@ class TicketById(Resource):
         response = make_response(ticket_dict, 200)
         return response
 
+    # def patch(self, id):
+    #     ticket = Ticket.query.filter_by(id=id).first()
+
+    #     data = request.get_json()
+    #     for attr in data:
+    #             setattr(ticket, attr, data[attr])
+
+    #             db.session.add(ticket)
+    #             db.session.commit()
+
+    #             return make_response(
+    #                 ticket.to_dict(),
+    #                 202
+    #             )
     def patch(self, id):
         ticket = Ticket.query.filter_by(id=id).first()
 
+        if not ticket:
+            return make_response({
+                "error": "Ticket not found"
+            }, 404)
+
         data = request.get_json()
         for attr in data:
-                setattr(ticket, attr, data[attr])
+            setattr(ticket, attr, data[attr])
 
-                db.session.add(ticket)
-                db.session.commit()
+        db.session.add(ticket)
+        db.session.commit()
 
-                return make_response(
-                    ticket.to_dict(),
-                    202
-                )
+        return make_response(
+            ticket.to_dict(),
+            202
+        )
 
     def delete(self, id):
         # user_id = get_current_user_id()
@@ -130,6 +149,7 @@ class TicketById(Resource):
         db.session.commit()
         return make_response({}, 204)
     
+api.add_resource(TicketById, '/tickets/<int:id>')
 
 
 
@@ -230,7 +250,6 @@ api.add_resource(CheckSession, '/check_session', endpoint='check_session')
 api.add_resource(Login, '/login', endpoint='login')
 api.add_resource(Logout, '/logout', endpoint='logout')
 api.add_resource(TicketIndex, '/ticket_index', endpoint='ticket_index')
-api.add_resource(TicketById, '/tickets/<int:id>')
 
 
 if __name__ == '__main__':

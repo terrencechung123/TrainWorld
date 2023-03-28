@@ -27,24 +27,6 @@ function TicketList() {
     });
   }
 
-  const updateTicket = async (id, data) => {
-    const response = await fetch(`/tickets/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message);
-    }
-
-    const ticketData = await response.json();
-    return ticketData;
-  };
-
   // function handleUpdateTicket(newTicket){
   //   setTickets(tickets => [...tickets, newTicket])
   // }
@@ -75,7 +57,7 @@ function TicketList() {
               <Button onClick={() => handleDeleteTicket(ticket.id)}>
                 Delete ticket
               </Button>
-              <Button as={Link} to="/update">
+              <Button as={Link} to={`/update/${ticket.id}/edit`}>
           Update Ticket
         </Button>
               {/* <p>
